@@ -4,7 +4,9 @@
 // UTILITY
 bool blynk_secure_state = false;
 bool flag_state_buzz = false;
-
+void logic_function();
+uint8_t getFingerprintID();
+int getFingerprintIDez();
 // Blynk
 #define BLYNK_PRINT Serial
 #include <ESP8266WiFi.h>
@@ -46,3 +48,8 @@ SoftwareSerial gps_serial(D4, D6); // RX, TX
 // LCD
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x21, 16, 2);
+
+// FINGERPRINT
+#include <Adafruit_Fingerprint.h>
+SoftwareSerial finger_serial(2, 3);
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&finger_serial);
