@@ -7,6 +7,9 @@ bool flag_state_buzz = false;
 void logic_function();
 uint8_t getFingerprintID();
 int getFingerprintIDez();
+float lat;
+float lng;
+
 // Blynk
 #define BLYNK_PRINT Serial
 #include <ESP8266WiFi.h>
@@ -16,6 +19,16 @@ char auth[] = "YourAuthToken";
 char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
 char server[] = "iot.serangkota.go.id";
+
+WidgetMap myMap(V0);
+BLYNK_CONNECTED()
+{
+    Blynk.syncVirtual(V3);
+}
+BLYNK_WRITE(V3)
+{
+    blynk_secure_state = param.asInt();
+}
 
 // Pins
 class Pin_
