@@ -2,6 +2,7 @@
 #include "function.h"
 void setup()
 {
+ 
   setting_up();
   Buzz.init_pin = D7;
   Selenoid.init_pin = D0;
@@ -34,6 +35,12 @@ void loop()
   lcd_blynk.print(4,0, gps.location.lat());
   lcd_blynk.print(0,1, "LNG:");
   lcd_blynk.print(4,1, gps.location.lng());
+  lcd.setCursor(0,0);
+  lcd.print("LAT: ");
+  lcd.print(gps.location.lat(), 6);
+  lcd.setCursor(0,0);
+  lcd.print("LNG: ");
+  lcd.print(gps.location.lng(), 6);
 
   if (gps.location.isUpdated())
   {
@@ -53,5 +60,4 @@ void loop()
   }
   if (gps.charsProcessed() < 10)
       Serial.println(F("WARNING: No GPS data.  Check wiring."));
-
 }

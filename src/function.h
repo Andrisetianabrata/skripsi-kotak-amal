@@ -3,14 +3,14 @@
 
 // UTILITY
 bool blynk_secure_state = false;
-uint8_t flag_door = 0;
+bool flag_door = 0;
 bool buzz_confirm = false;
 bool buzz_wrong = false;
 bool door_state = false;
 bool door_secure_flag = false;
 bool terbuka = !LOW;
 bool tertutup = !HIGH;
-unsigned long times = 0;
+// unsigned long times = 0;
 
 // Blynk
 #define BLYNK_PRINT Serial
@@ -23,7 +23,7 @@ char pass[] = "88021249";
 char server[] = "iot.serangkota.go.id";
 
 WidgetMap myMap(V0);
-WidgetLED  led(V3);
+WidgetLED led(V3);
 WidgetLCD lcd_blynk(V4);
 
 // Pins
@@ -63,109 +63,34 @@ LiquidCrystal_I2C lcd(0x21, 16, 2);
 SoftwareSerial mySerial(D5, D6);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
-uint8_t getFingerprintID()
-{
-  uint8_t p = finger.getImage();
-  switch (p)
-  {
-  case FINGERPRINT_OK:
-    Serial.println("Image taken");
-    break;
-  case FINGERPRINT_NOFINGER:
-    // Serial.println("No finger detected");
-    return p;
-  case FINGERPRINT_PACKETRECIEVEERR:
-    Serial.println("Communication error");
-    return p;
-  case FINGERPRINT_IMAGEFAIL:
-    Serial.println("Imaging error");
-    return p;
-  default:
-    Serial.println("Unknown error");
-    return p;
-  }
-
-  // OK success!
-
-  p = finger.image2Tz();
-  switch (p)
-  {
-  case FINGERPRINT_OK:
-    Serial.println("Image converted");
-    break;
-  case FINGERPRINT_IMAGEMESS:
-    Serial.println("Image too messy");
-    return p;
-  case FINGERPRINT_PACKETRECIEVEERR:
-    Serial.println("Communication error");
-    return p;
-  case FINGERPRINT_FEATUREFAIL:
-    Serial.println("Could not find fingerprint features");
-    return p;
-  case FINGERPRINT_INVALIDIMAGE:
-    Serial.println("Could not find fingerprint features");
-    return p;
-  default:
-    Serial.println("Unknown error");
-    return p;
-  }
-
-  // OK converted!
-  p = finger.fingerSearch();
-  if (p == FINGERPRINT_OK)
-  {
-    // Match
-    Serial.println("Found a print match!");
-    buzz_confirm = true;
-    door_secure_flag = true;
-    times = millis();
-  }
-  else if (p == FINGERPRINT_PACKETRECIEVEERR)
-  {
-    Serial.println("Communication error");
-    return p;
-  }
-  else if (p == FINGERPRINT_NOTFOUND)
-  {
-    // Not match
-    Serial.println("Did not find a match");
-    Blynk.notify("Sidik jari tidak terdaftar mencoba membuka kotak");
-    buzz_wrong = true;
-    return p;
-  }
-  else
-  {
-    Serial.println("Unknown error");
-    return p;
-  }
-
-  // found a match!
-  Serial.print("Found ID #");
-  Serial.print(finger.fingerID);
-  Serial.print(" with confidence of ");
-  Serial.println(finger.confidence);
-
-  return finger.fingerID;
-}
-
 void setting_up()
 {
+  lcd.init();
+  lcd.backlight();
   Serial.begin(9600);
-	gps_serial.begin(9600);
-  while (!Serial)
-    ; // For Yun/Leo/Micro/Zero/...
-  delay(100);
+  gps_serial.begin(9600);
   Serial.println(Buzz.init_pin);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Init Finger print");
 
   // set the data rate for the sensor serial port
   finger.begin(57600);
   delay(5);
   if (finger.verifyPassword())
   {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Sensor terdeteksi");
     Serial.println("Found fingerprint sensor!");
   }
   else
   {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Sensor tidak");
+    lcd.setCursor(0, 1);
+    lcd.print("Terdeteksi");
     Serial.println("Did not find fingerprint sensor :(");
     while (1)
     {
@@ -203,8 +128,19 @@ void setting_up()
     Serial.print(finger.templateCount);
     Serial.println(" templates");
   }
-
+  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Connetcing to");
+  lcd.setCursor(0, 1);
+  lcd.print(ssid);
   Blynk.begin(auth, ssid, pass, server, 8080);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("connected to");
+  lcd.setCursor(0, 1);
+  lcd.print(ssid);
+  lcd.clear();
 }
 
 void logic()
@@ -262,4 +198,102 @@ void logic()
     Blynk.notify("Kotak amal terbuka dengan paksa");
     Serial.println("pintu terbuka paksa");
   }
+}
+
+uint8_t getFingerprintID()
+{
+  uint8_t p = finger.getImage();
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    Serial.println("Image taken");
+    break;
+  case FINGERPRINT_NOFINGER:
+    // Serial.println("No finger detected");
+    return p;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Communication error");
+    return p;
+  case FINGERPRINT_IMAGEFAIL:
+    Serial.println("Imaging error");
+    return p;
+  default:
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // OK success!
+
+  p = finger.image2Tz();
+  switch (p)
+  {
+  case FINGERPRINT_OK:
+    Serial.println("Image converted");
+    break;
+  case FINGERPRINT_IMAGEMESS:
+    Serial.println("Image too messy");
+    return p;
+  case FINGERPRINT_PACKETRECIEVEERR:
+    Serial.println("Communication error");
+    return p;
+  case FINGERPRINT_FEATUREFAIL:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  case FINGERPRINT_INVALIDIMAGE:
+    Serial.println("Could not find fingerprint features");
+    return p;
+  default:
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // OK converted!
+  p = finger.fingerSearch();
+  if (p == FINGERPRINT_OK)
+  {
+    // Match
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Jari Terdeteksi");
+    lcd.setCursor(0,1);
+    lcd.print("Pintu terbuka");
+    Serial.println("Found a print match!");
+    buzz_confirm = true;
+    door_secure_flag = true;
+    delay(2000);
+    lcd.clear();
+  }
+  else if (p == FINGERPRINT_PACKETRECIEVEERR)
+  {
+    Serial.println("Communication error");
+    return p;
+  }
+  else if (p == FINGERPRINT_NOTFOUND)
+  {
+    // Not match
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Jari Terdeteksi");
+    lcd.setCursor(0,1);
+    lcd.print("Tidak Terdaftar");
+    Serial.println("Did not find a match");
+    Blynk.notify("Sidik jari tidak terdaftar mencoba membuka kotak");
+    buzz_wrong = true;
+    delay(2000);
+    lcd.clear();
+    return p;
+  }
+  else
+  {
+    Serial.println("Unknown error");
+    return p;
+  }
+
+  // found a match!
+  Serial.print("Found ID #");
+  Serial.print(finger.fingerID);
+  Serial.print(" with confidence of ");
+  Serial.println(finger.confidence);
+
+  return finger.fingerID;
 }
