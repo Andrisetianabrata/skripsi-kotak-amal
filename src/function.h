@@ -43,7 +43,7 @@ public:
 	int init_pin;
 	void setpin_input()
 	{
-		pinMode(init_pin, INPUT);
+		pinMode(init_pin, INPUT_PULLUP);
 	}
 	void setpin_output()
 	{
