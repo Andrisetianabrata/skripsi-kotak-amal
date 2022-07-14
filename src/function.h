@@ -10,8 +10,6 @@ bool door_state = false;
 bool door_secure_flag = false;
 bool terbuka = !LOW;
 bool tertutup = !HIGH;
-float lat;
-float lng;
 unsigned long times = 0;
 
 // Blynk
@@ -19,12 +17,14 @@ unsigned long times = 0;
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 
-char auth[] = "n5MniZ1oGwaBEogxex-SFZ21So6Uw8_Q";
+char auth[] = "hy1i86C-X8p-a_rwzWusm8uDqbJ9KN1T";
 char ssid[] = "PONDOK AZZUMAR";
 char pass[] = "88021249";
 char server[] = "iot.serangkota.go.id";
 
 WidgetMap myMap(V0);
+WidgetLED  led(V3);
+WidgetLCD lcd_blynk(V4);
 
 // Pins
 class Pin_
@@ -238,6 +238,7 @@ void logic()
       Selenoid.write(LOW);
       flag_door = 1;
       Serial.println("Pintu terbuka");
+      led.on();
     }
   }
   else
@@ -247,6 +248,7 @@ void logic()
       Serial.println("Pintu tertutup");
       Selenoid.write(HIGH);
       flag_door = 0;
+      led.off();
     }
   }
 

@@ -29,7 +29,11 @@ void loop()
   Blynk.virtualWrite(V1, gps.location.lat());
   Blynk.virtualWrite(V2, gps.location.lng());
   myMap.location(1, gps.location.lat(), gps.location.lng(), "Kotak amal");
-
+  
+  lcd_blynk.print(0,0, "LAT:");
+  lcd_blynk.print(4,0, gps.location.lat());
+  lcd_blynk.print(0,1, "LNG:");
+  lcd_blynk.print(4,1, gps.location.lng());
 
   if (gps.location.isUpdated())
   {
@@ -41,8 +45,6 @@ void loop()
   }
   if(gps.location.isValid())
   {
-    lat = gps.location.lat();
-    lng = gps.location.lng();
     Serial.println("valid ");
     Serial.print("lat = ");
     Serial.println(gps.location.lat());
