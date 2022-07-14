@@ -22,5 +22,5 @@ void loop()
   getFingerprintID();
   delay(50);
   logic();
-  // Serial.println(Pintu.state());
+  // Serial.println(flag_door);
 }
