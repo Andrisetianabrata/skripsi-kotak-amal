@@ -245,6 +245,9 @@ void logic()
 	if (door_secure_flag)
 	{
 		Selenoid.write(LOW);
+		Serial.println("Pintu terbuka");
+	}else{
+		Serial.println("pintu tertutup");
 	}
 
 	if (Pintu.state() == tertutup && door_secure_flag)
@@ -256,5 +259,6 @@ void logic()
 	if (Pintu.state() == terbuka && !door_secure_flag)
 	{
 		// Blynk.notify("Kotak amal terbuka dengan paksa");
+		Serial.println("pintu terbuka paksa");
 	}
 }
