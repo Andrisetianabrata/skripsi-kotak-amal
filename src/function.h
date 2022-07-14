@@ -254,7 +254,7 @@ void logic()
 	{
 		Selenoid.write(HIGH);
 		door_secure_flag = false;
-	}
+	} 
 
 	if (Pintu.state() == terbuka && !door_secure_flag)
 	{
