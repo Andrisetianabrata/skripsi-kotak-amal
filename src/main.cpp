@@ -19,11 +19,18 @@ void setup()
 
 void loop()
 {
+  Blynk.run();
   getFingerprintID();
   delay(200);
   logic();
   while (gps_serial.available() > 0)
     gps.encode(gps_serial.read());
+
+  Blynk.virtualWrite(V1, gps.location.lat());
+  Blynk.virtualWrite(V2, gps.location.lng());
+  myMap.location(1, gps.location.lat(), gps.location.lng(), "Kotak amal");
+
+
   if (gps.location.isUpdated())
   {
     Serial.println("no valid ");

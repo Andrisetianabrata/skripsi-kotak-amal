@@ -25,14 +25,6 @@ char pass[] = "88021249";
 char server[] = "iot.serangkota.go.id";
 
 WidgetMap myMap(V0);
-BLYNK_CONNECTED()
-{
-  Blynk.syncVirtual(V3);
-}
-BLYNK_WRITE(V3)
-{
-  blynk_secure_state = param.asInt();
-}
 
 // Pins
 class Pin_
@@ -137,6 +129,7 @@ uint8_t getFingerprintID()
   {
     // Not match
     Serial.println("Did not find a match");
+    Blynk.notify("Sidik jari tidak terdaftar mencoba membuka kotak");
     buzz_wrong = true;
     return p;
   }
@@ -152,29 +145,6 @@ uint8_t getFingerprintID()
   Serial.print(" with confidence of ");
   Serial.println(finger.confidence);
 
-  return finger.fingerID;
-}
-
-// returns -1 if failed, otherwise returns ID #
-int getFingerprintIDez()
-{
-  uint8_t p = finger.getImage();
-  if (p != FINGERPRINT_OK)
-    return -1;
-
-  p = finger.image2Tz();
-  if (p != FINGERPRINT_OK)
-    return -1;
-
-  p = finger.fingerFastSearch();
-  if (p != FINGERPRINT_OK)
-    return -1;
-
-  // found a match!
-  Serial.print("Found ID #");
-  Serial.print(finger.fingerID);
-  Serial.print(" with confidence of ");
-  Serial.println(finger.confidence);
   return finger.fingerID;
 }
 
@@ -233,6 +203,8 @@ void setting_up()
     Serial.print(finger.templateCount);
     Serial.println(" templates");
   }
+
+  Blynk.begin(auth, ssid, pass, server, 8080);
 }
 
 void logic()
