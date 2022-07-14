@@ -63,7 +63,7 @@ public:
 // GPS
 #include <TinyGPSPlus.h>
 TinyGPSPlus gps;
-SoftwareSerial gps_serial(D4, D3); // RX, TX
+SoftwareSerial gps_serial(D2, D3); // RX, TX
 
 // LCD
 #include <LiquidCrystal_I2C.h>
@@ -184,6 +184,7 @@ int getFingerprintIDez()
 void setting_up()
 {
   Serial.begin(9600);
+	gps_serial.begin(9600);
   while (!Serial)
     ; // For Yun/Leo/Micro/Zero/...
   delay(100);

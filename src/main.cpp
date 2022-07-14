@@ -22,5 +22,13 @@ void loop()
   getFingerprintID();
   delay(50);
   logic();
-  // Serial.println(flag_door);
+  while (gps_serial.available() > 0)
+    gps.encode(gps_serial.read());
+
+  if(gps.location.isValid())
+  {
+    lat = gps.location.lat();
+    lng = gps.location.lng();
+  }
+  Serial.printf("lat = %f\nlng = %f\n", lat, lng);
 }
