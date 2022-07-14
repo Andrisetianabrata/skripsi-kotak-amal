@@ -10,9 +10,6 @@ bool door_state = false;
 bool door_secure_flag = false;
 bool terbuka = !LOW;
 bool tertutup = !HIGH;
-// void logic_function();
-// uint8_t getFingerprintID();
-// int getFingerprintIDez();
 float lat;
 float lng;
 unsigned long times = 0;
@@ -22,9 +19,9 @@ unsigned long times = 0;
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 
-char auth[] = "Admin";
-char ssid[] = "Admin";
-char pass[] = "";
+char auth[] = "n5MniZ1oGwaBEogxex-SFZ21So6Uw8_Q";
+char ssid[] = "PONDOK AZZUMAR";
+char pass[] = "88021249";
 char server[] = "iot.serangkota.go.id";
 
 WidgetMap myMap(V0);
@@ -63,7 +60,7 @@ public:
 // GPS
 #include <TinyGPSPlus.h>
 TinyGPSPlus gps;
-SoftwareSerial gps_serial(D2, D3); // RX, TX
+SoftwareSerial gps_serial(D3, D2); // RX, TX
 
 // LCD
 #include <LiquidCrystal_I2C.h>
@@ -288,7 +285,7 @@ void logic()
 
   if (Pintu.state() == terbuka && !door_secure_flag && flag_door == 0)
   {
-    // Blynk.notify("Kotak amal terbuka dengan paksa");
+    Blynk.notify("Kotak amal terbuka dengan paksa");
     Serial.println("pintu terbuka paksa");
   }
 }

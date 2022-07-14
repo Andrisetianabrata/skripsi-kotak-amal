@@ -20,15 +20,29 @@ void setup()
 void loop()
 {
   getFingerprintID();
-  delay(50);
+  delay(200);
   logic();
   while (gps_serial.available() > 0)
     gps.encode(gps_serial.read());
-
+  if (gps.location.isUpdated())
+  {
+    Serial.println("no valid ");
+    Serial.print("lat = ");
+    Serial.println(gps.location.lat(), 6);
+    Serial.print("lng = ");
+    Serial.println(gps.location.lng(), 6);
+  }
   if(gps.location.isValid())
   {
     lat = gps.location.lat();
     lng = gps.location.lng();
+    Serial.println("valid ");
+    Serial.print("lat = ");
+    Serial.println(gps.location.lat());
+    Serial.print("lng = ");
+    Serial.println(gps.location.lng());
   }
-  Serial.printf("lat = %f\nlng = %f\n", lat, lng);
+  if (gps.charsProcessed() < 10)
+      Serial.println(F("WARNING: No GPS data.  Check wiring."));
+
 }
