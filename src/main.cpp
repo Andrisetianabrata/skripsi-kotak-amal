@@ -20,7 +20,7 @@ void setup()
 void loop()
 {
   getFingerprintID();
-  delay(500);
+  delay(50);
   logic();
   // Serial.println(Pintu.state());
 }
