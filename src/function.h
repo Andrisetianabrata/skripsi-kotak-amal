@@ -3,21 +3,27 @@
 
 // UTILITY
 bool blynk_secure_state = false;
-bool flag_state_buzz = false;
+bool buzz_confirm = false;
+bool buzz_wrong = false;
+bool door_state = false;
+bool door_secure_flag = false;
+bool terbuka = LOW;
+bool tertutup = HIGH;
 void logic_function();
 uint8_t getFingerprintID();
 int getFingerprintIDez();
 float lat;
 float lng;
+unsigned long times = 0;
 
 // Blynk
 #define BLYNK_PRINT Serial
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 
-char auth[] = "YourAuthToken";
-char ssid[] = "YourNetworkName";
-char pass[] = "YourPassword";
+char auth[] = "Admin";
+char ssid[] = "Admin";
+char pass[] = "";
 char server[] = "iot.serangkota.go.id";
 
 WidgetMap myMap(V0);
@@ -34,14 +40,14 @@ BLYNK_WRITE(V3)
 class Pin_
 {
 public:
-    uint8_t init_pin;
+    int init_pin;
     void setpin_input()
     {
-        pinMode(init_pin, OUTPUT);
+        pinMode(init_pin, INPUT);
     }
     void setpin_output()
     {
-        pinMode(init_pin, INPUT_PULLUP);
+        pinMode(init_pin, OUTPUT);
     }
     bool state()
     {
@@ -56,7 +62,7 @@ public:
 // GPS
 #include <TinyGPSPlus.h>
 TinyGPSPlus gps;
-SoftwareSerial gps_serial(D4, D6); // RX, TX
+SoftwareSerial gps_serial(D4, D3); // RX, TX
 
 // LCD
 #include <LiquidCrystal_I2C.h>
@@ -64,5 +70,5 @@ LiquidCrystal_I2C lcd(0x21, 16, 2);
 
 // FINGERPRINT
 #include <Adafruit_Fingerprint.h>
-SoftwareSerial finger_serial(2, 3);
-Adafruit_Fingerprint finger = Adafruit_Fingerprint(&finger_serial);
+SoftwareSerial mySerial(D5, D6);
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
