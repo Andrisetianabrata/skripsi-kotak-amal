@@ -5,15 +5,15 @@ void setup()
  
   setting_up();
 
-  Buzz.init_pin = D7;
-  Selenoid.init_pin = D0;
-  Pintu.init_pin = D1;
-  Vibration.init_pin = D10;
+  // Buzz.init_pin = D7;
+  // Selenoid.init_pin = D0;
+  // Pintu.init_pin = D1;
+  // Vibration.init_pin = D10;
 
-  Buzz.output();
-  Pintu.input();
-  Selenoid.output();
-  Vibration.input();
+  Buzz.init(OUTPUT);
+  Pintu.init(INPUT_PULLUP);
+  Selenoid.init(OUTPUT);
+  Vibration.init(INPUT_PULLUP);
 
   Selenoid.write(LOW);
   Buzz.write(HIGH);

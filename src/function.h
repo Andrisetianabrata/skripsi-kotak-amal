@@ -27,18 +27,18 @@ WidgetLED led(V3);
 WidgetLCD lcd_blynk(V4);
 
 // Pins
-class Pin_
+class PIN
 {
 public:
-  int init_pin;
-  void input()
+  PIN(uint8_t pin)
   {
-    pinMode(init_pin, INPUT_PULLUP);
+    init_pin = pin;
   }
-  void output()
+  void init(uint8_t mode)
   {
-    pinMode(init_pin, OUTPUT);
+    pinMode(init_pin, mode);
   }
+
   bool read()
   {
     return digitalRead(init_pin);
@@ -47,7 +47,11 @@ public:
   {
     digitalWrite(init_pin, state);
   }
-} Selenoid, Pintu, Vibration, Buzz;
+private:
+  int init_pin;
+};
+
+PIN Selenoid(D0), Pintu(D1), Vibration(D4), Buzz(D7);
 
 // GPS
 #include <TinyGPSPlus.h>
@@ -69,10 +73,11 @@ void setting_up()
   lcd.backlight();
   Serial.begin(9600);
   gps_serial.begin(9600);
-  Serial.println(Buzz.init_pin);
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Init Finger print");
+  lcd.print("Init sensor");
+  lcd.setCursor(0, 1);
+  lcd.print("Fingerprint");
 
   // set the data rate for the sensor serial port
   finger.begin(57600);
@@ -81,7 +86,9 @@ void setting_up()
   {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Sensor terdeteksi");
+    lcd.print("Sensor finger");
+    lcd.setCursor(0, 1);
+    lcd.print("Terdeteksi");
     Serial.println("Found fingerprint sensor!");
   }
   else
@@ -197,6 +204,10 @@ void logic()
   {
     Blynk.notify("Kotak amal terbuka dengan paksa");
     Serial.println("pintu terbuka paksa");
+  }
+  if(Vibration.read())
+  {
+    Blynk.notify("Ada getaran terdeteksi");
   }
 }
 
