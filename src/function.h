@@ -31,15 +31,15 @@ class Pin_
 {
 public:
   int init_pin;
-  void setpin_input()
+  void input()
   {
     pinMode(init_pin, INPUT_PULLUP);
   }
-  void setpin_output()
+  void output()
   {
     pinMode(init_pin, OUTPUT);
   }
-  bool state()
+  bool read()
   {
     return digitalRead(init_pin);
   }
@@ -169,7 +169,7 @@ void logic()
 
   if (door_secure_flag)
   {
-    if (Pintu.state() == tertutup)
+    if (Pintu.read() == tertutup)
     {
       Selenoid.write(LOW);
       flag_door = 1;
@@ -179,7 +179,7 @@ void logic()
   }
   else
   {
-    if (Pintu.state() == tertutup)
+    if (Pintu.read() == tertutup)
     {
       Serial.println("Pintu tertutup");
       Selenoid.write(HIGH);
@@ -188,12 +188,12 @@ void logic()
     }
   }
 
-  if (Pintu.state() == terbuka)
+  if (Pintu.read() == terbuka)
   {
     door_secure_flag = false;
   }
 
-  if (Pintu.state() == terbuka && !door_secure_flag && flag_door == 0)
+  if (Pintu.read() == terbuka && !door_secure_flag && flag_door == 0)
   {
     Blynk.notify("Kotak amal terbuka dengan paksa");
     Serial.println("pintu terbuka paksa");
