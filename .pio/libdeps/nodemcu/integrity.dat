@@ -1,4 +1,5 @@
-marcoschwartz/LiquidCrystal_I2C@^1.1.4
-mikalhart/TinyGPSPlus@^1.0.3
 blynkkk/Blynk@^1.1.0
+ArduinoJson
+marcoschwartz/LiquidCrystal_I2C@^1.1.4
 adafruit/Adafruit Fingerprint Sensor Library@^2.1.0
+mikalhart/TinyGPSPlus@^1.0.3

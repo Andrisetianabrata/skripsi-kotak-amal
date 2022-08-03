@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
+#include <ArduinoJson.h>
 
 // UTILITY
 bool blynk_secure_state = false;
@@ -10,6 +11,8 @@ bool door_state = false;
 bool door_secure_flag = false;
 bool terbuka = !LOW;
 bool tertutup = !HIGH;
+
+SoftwareSerial jsonify(D4, D7);
 // unsigned long times = 0;
 
 // Blynk
@@ -47,14 +50,12 @@ public:
   {
     digitalWrite(init_pin, state);
   }
+
 private:
   int init_pin;
 };
 
-// PIN Selenoid(D0), Pintu(10), Vibration(D4), Buzz(D7);
 PIN Buzz(D7);
-PIN Pintu(D0);
-PIN Vibration(D4);
 
 // GPS
 #include <TinyGPSPlus.h>
@@ -179,40 +180,40 @@ void logic()
 
   if (door_secure_flag)
   {
-    if (Pintu.read() == tertutup)
-    {
-      // Selenoid.write(LOW);
-      flag_door = 1;
-      Serial.println("Pintu terbuka");
-      led.on();
-    }
+    // if (Pintu.read() == tertutup)
+    // {
+    //   // Selenoid.write(LOW);
+    //   flag_door = 1;
+    //   Serial.println("Pintu terbuka");
+    //   led.on();
+    // }
   }
   else
   {
-    if (Pintu.read() == tertutup)
-    {
-      Serial.println("Pintu tertutup");
-      // Selenoid.write(HIGH);
-      flag_door = 0;
-      led.off();
-    }
+    // if (Pintu.read() == tertutup)
+    // {
+    //   Serial.println("Pintu tertutup");
+    //   // Selenoid.write(HIGH);
+    //   flag_door = 0;
+    //   led.off();
+    // }
   }
 
-  if (Pintu.read() == terbuka)
-  {
-    door_secure_flag = false;
-  }
+  // if (Pintu.read() == terbuka)
+  // {
+  //   door_secure_flag = false;
+  // }
 
-  if (Pintu.read() == terbuka && !door_secure_flag && flag_door == 0)
-  {
-    Blynk.notify("Kotak amal terbuka dengan paksa");
-    Serial.println("pintu terbuka paksa");
-  }
+  // if (Pintu.read() == terbuka && !door_secure_flag && flag_door == 0)
+  // {
+  //   Blynk.notify("Kotak amal terbuka dengan paksa");
+  //   Serial.println("pintu terbuka paksa");
+  // }
 
-  if(Vibration.read())
-  {
-    Blynk.notify("Ada getaran terdeteksi");
-  }
+  // if (Vibration.read())
+  // {
+  //   Blynk.notify("Ada getaran terdeteksi");
+  // }
 }
 
 uint8_t getFingerprintID()
@@ -268,9 +269,9 @@ uint8_t getFingerprintID()
   {
     // Match
     lcd.clear();
-    lcd.setCursor(0,0);
+    lcd.setCursor(0, 0);
     lcd.print("Jari Terdeteksi");
-    lcd.setCursor(0,1);
+    lcd.setCursor(0, 1);
     lcd.print("Pintu terbuka");
     Serial.println("Found a print match!");
     buzz_confirm = true;
@@ -287,9 +288,9 @@ uint8_t getFingerprintID()
   {
     // Not match
     lcd.clear();
-    lcd.setCursor(0,0);
+    lcd.setCursor(0, 0);
     lcd.print("Jari Terdeteksi");
-    lcd.setCursor(0,1);
+    lcd.setCursor(0, 1);
     lcd.print("Tidak Terdaftar");
     Serial.println("Did not find a match");
     Blynk.notify("Sidik jari tidak terdaftar mencoba membuka kotak");
@@ -311,4 +312,29 @@ uint8_t getFingerprintID()
   Serial.println(finger.confidence);
 
   return finger.fingerID;
+}
+
+void terima()
+{
+  if (jsonify.available())
+  {
+    StaticJsonDocument<48> doc;
+
+    DeserializationError error = deserializeJson(doc, jsonify);
+
+    if (error == DeserializationError::Ok)
+    {
+      int vibration = doc["vibration"]; // 1
+      int door = doc["door"];           // 1
+
+      Serial.printf("Door      = %d\nVibration = %d\n", door, vibration);
+    }
+    else
+    {
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.f_str());
+      if (jsonify.available() > 0)
+        jsonify.read();
+    }
+  }
 }

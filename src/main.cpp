@@ -4,16 +4,15 @@ void setup()
 {
  
   setting_up();
-
+  
+  jsonify.begin(9600);
   // Buzz.init_pin = D7;
   // Selenoid.init_pin = D0;
   // Pintu.init_pin = D1;
   // Vibration.init_pin = D10;
 
   Buzz.init(OUTPUT);
-  Pintu.init(INPUT_PULLUP);
   // Selenoid.init(OUTPUT);
-  Vibration.init(INPUT_PULLUP);
 
   // Selenoid.write(LOW);
   Buzz.write(HIGH);
@@ -66,5 +65,4 @@ void loop()
       // Serial.println(F("WARNING: No GPS data.  Check wiring."));
       
     Serial.print("Getaran = ");
-    Serial.println(Vibration.read());
 }
