@@ -6,11 +6,6 @@ void setup()
   setting_up();
   
   jsonify.begin(9600);
-  // Buzz.init_pin = D7;
-  // Selenoid.init_pin = D0;
-  // Pintu.init_pin = D1;
-  // Vibration.init_pin = D10;
-
   Buzz.init(OUTPUT);
   // Selenoid.init(OUTPUT);
 
@@ -27,7 +22,7 @@ void loop()
   getFingerprintID();
   delay(200);
   logic();
-  while (gps_serial.available() > 0)
+  if (gps_serial.available() > 0)
     gps.encode(gps_serial.read());
 
   Blynk.virtualWrite(V1, gps.location.lat());
@@ -61,7 +56,7 @@ void loop()
     Serial.print("lng = ");
     Serial.println(gps.location.lng());
   }
-  if (gps.charsProcessed() < 10);
+  // if (gps.charsProcessed() < 10)
       // Serial.println(F("WARNING: No GPS data.  Check wiring."));
       
     Serial.print("Getaran = ");

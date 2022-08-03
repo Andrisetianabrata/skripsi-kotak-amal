@@ -11,6 +11,8 @@ bool door_state = false;
 bool door_secure_flag = false;
 bool terbuka = !LOW;
 bool tertutup = !HIGH;
+bool vibration = false;
+bool door = false;
 
 SoftwareSerial jsonify(D4, D7);
 // unsigned long times = 0;
@@ -55,7 +57,7 @@ private:
   int init_pin;
 };
 
-PIN Buzz(D7);
+PIN Buzz(D0);
 
 // GPS
 #include <TinyGPSPlus.h>
@@ -180,40 +182,40 @@ void logic()
 
   if (door_secure_flag)
   {
-    // if (Pintu.read() == tertutup)
-    // {
-    //   // Selenoid.write(LOW);
-    //   flag_door = 1;
-    //   Serial.println("Pintu terbuka");
-    //   led.on();
-    // }
+    if (door == tertutup)
+    {
+      // Selenoid.write(LOW);
+      flag_door = 1;
+      Serial.println("Pintu terbuka");
+      led.on();
+    }
   }
   else
   {
-    // if (Pintu.read() == tertutup)
-    // {
-    //   Serial.println("Pintu tertutup");
-    //   // Selenoid.write(HIGH);
-    //   flag_door = 0;
-    //   led.off();
-    // }
+    if (door == tertutup)
+    {
+      Serial.println("Pintu tertutup");
+      // Selenoid.write(HIGH);
+      flag_door = 0;
+      led.off();
+    }
   }
 
-  // if (Pintu.read() == terbuka)
-  // {
-  //   door_secure_flag = false;
-  // }
+  if (door == terbuka)
+  {
+    door_secure_flag = false;
+  }
 
-  // if (Pintu.read() == terbuka && !door_secure_flag && flag_door == 0)
-  // {
-  //   Blynk.notify("Kotak amal terbuka dengan paksa");
-  //   Serial.println("pintu terbuka paksa");
-  // }
+  if (door == terbuka && !door_secure_flag && flag_door == 0)
+  {
+    Blynk.notify("Kotak amal terbuka dengan paksa");
+    Serial.println("pintu terbuka paksa");
+  }
 
-  // if (Vibration.read())
-  // {
-  //   Blynk.notify("Ada getaran terdeteksi");
-  // }
+  if (vibration)
+  {
+    Blynk.notify("Ada getaran terdeteksi");
+  }
 }
 
 uint8_t getFingerprintID()
@@ -324,8 +326,8 @@ void terima()
 
     if (error == DeserializationError::Ok)
     {
-      int vibration = doc["vibration"]; // 1
-      int door = doc["door"];           // 1
+      vibration = doc["vibration"]; // 1
+      door = doc["door"];           // 1
 
       Serial.printf("Door      = %d\nVibration = %d\n", door, vibration);
     }
