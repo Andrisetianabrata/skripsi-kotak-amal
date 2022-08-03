@@ -51,16 +51,19 @@ private:
   int init_pin;
 };
 
-PIN Selenoid(D0), Pintu(D1), Vibration(D4), Buzz(D7);
+// PIN Selenoid(D0), Pintu(10), Vibration(D4), Buzz(D7);
+PIN Buzz(D7);
+PIN Pintu(D0);
+PIN Vibration(D4);
 
 // GPS
 #include <TinyGPSPlus.h>
 TinyGPSPlus gps;
-SoftwareSerial gps_serial(D3, D2); // RX, TX
+SoftwareSerial gps_serial(D3, D8); // RX, TX
 
 // LCD
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x21, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // FINGERPRINT
 #include <Adafruit_Fingerprint.h>
@@ -71,7 +74,7 @@ void setting_up()
 {
   lcd.init();
   lcd.backlight();
-  Serial.begin(9600);
+  Serial.begin(115200);
   gps_serial.begin(9600);
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -178,7 +181,7 @@ void logic()
   {
     if (Pintu.read() == tertutup)
     {
-      Selenoid.write(LOW);
+      // Selenoid.write(LOW);
       flag_door = 1;
       Serial.println("Pintu terbuka");
       led.on();
@@ -189,7 +192,7 @@ void logic()
     if (Pintu.read() == tertutup)
     {
       Serial.println("Pintu tertutup");
-      Selenoid.write(HIGH);
+      // Selenoid.write(HIGH);
       flag_door = 0;
       led.off();
     }
@@ -205,6 +208,7 @@ void logic()
     Blynk.notify("Kotak amal terbuka dengan paksa");
     Serial.println("pintu terbuka paksa");
   }
+
   if(Vibration.read())
   {
     Blynk.notify("Ada getaran terdeteksi");

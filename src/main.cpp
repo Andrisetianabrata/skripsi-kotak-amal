@@ -12,14 +12,14 @@ void setup()
 
   Buzz.init(OUTPUT);
   Pintu.init(INPUT_PULLUP);
-  Selenoid.init(OUTPUT);
+  // Selenoid.init(OUTPUT);
   Vibration.init(INPUT_PULLUP);
 
-  Selenoid.write(LOW);
+  // Selenoid.write(LOW);
   Buzz.write(HIGH);
   delay(1000);
   Buzz.write(LOW);
-  Selenoid.write(HIGH);
+  // Selenoid.write(HIGH);
 }
 
 void loop()
@@ -42,7 +42,7 @@ void loop()
   lcd.setCursor(0,0);
   lcd.print("LAT: ");
   lcd.print(gps.location.lat(), 6);
-  lcd.setCursor(0,0);
+  lcd.setCursor(0,1);
   lcd.print("LNG: ");
   lcd.print(gps.location.lng(), 6);
 
@@ -62,6 +62,9 @@ void loop()
     Serial.print("lng = ");
     Serial.println(gps.location.lng());
   }
-  if (gps.charsProcessed() < 10)
-      Serial.println(F("WARNING: No GPS data.  Check wiring."));
+  if (gps.charsProcessed() < 10);
+      // Serial.println(F("WARNING: No GPS data.  Check wiring."));
+      
+    Serial.print("Getaran = ");
+    Serial.println(Vibration.read());
 }
